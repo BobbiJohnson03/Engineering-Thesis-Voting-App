@@ -1,0 +1,50 @@
+name: aplikacja_do_przeprowadzania_glosowan
+description: "Offline LAN voting app (Admin Host + PWA clients)."
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.9.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Storage
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+  path_provider: ^2.1.2
+
+  # Kryptografia / tokeny / hash
+  crypto: ^3.0.3
+  dart_jsonwebtoken: ^2.14.0   # proste JWT HS256 (join tokeny); zamiast "encrypt"
+
+  # QR i skaner
+  qr_flutter: ^4.1.0
+  mobile_scanner: ^5.1.1
+
+  # WebSocket (klient)
+  web_socket_channel: ^2.4.0
+
+  # Lokalny serwer HTTP + WS (Admin Host)
+  shelf: ^1.4.1
+  shelf_web_socket: ^1.0.4
+  shelf_router: ^1.1.4
+  mime: ^1.0.4                  # serwowanie statycznych plików PWA
+
+  # UI / stan (lekkie)
+  provider: ^6.1.1
+  flutter_animate: ^4.5.0
+
+  # Ikony i drobiazgi
+  cupertino_icons: ^1.0.8
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  build_runner: ^2.4.6
+  hive_generator: ^2.0.1
+
+flutter:
+  uses-material-design: true
