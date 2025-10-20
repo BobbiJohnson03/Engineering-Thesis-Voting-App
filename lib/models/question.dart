@@ -12,11 +12,9 @@ class OptionModel /* pojedyncza opcja odpowiedzi na pytanie */ {
   OptionModel({required this.id, required this.label, required this.order});
 }
 
+/* pojedyncze pytanie; admin tworzy kilka takich pytań i grupuje je następnie w modelu Session */
 @HiveType(typeId: 3)
-class Question
-    extends
-        HiveObject /* pojedyncze pytanie w sesji głosowania
-admin tworzy kilka takich pytań i grupuje je w modelu Session */ {
+class Question extends HiveObject {
   @HiveField(0)
   String questionId;
 

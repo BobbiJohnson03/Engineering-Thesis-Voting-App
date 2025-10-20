@@ -1,6 +1,8 @@
 import 'package:hive/hive.dart';
 part 'meeting_pass.g.dart';
 
+/*permission to join the whole meeting */
+
 @HiveType(typeId: 15)
 class MeetingPass extends HiveObject {
   @HiveField(0)
@@ -13,7 +15,8 @@ class MeetingPass extends HiveObject {
   DateTime issuedAt;
 
   @HiveField(3)
-  bool revoked;
+  bool revoked; /* If admin decides to invalidate a ticket (e.g., participant leaves the meeting, or technical issue),
+they can mark revoked = true to disable it. */
 
   @HiveField(4)
   String? deviceFingerprintHash; // best-effort (optional)

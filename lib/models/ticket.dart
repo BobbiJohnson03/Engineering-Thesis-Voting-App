@@ -1,6 +1,8 @@
 import 'package:hive/hive.dart';
 part 'ticket.g.dart';
 
+/*permission to vote in a single session within one meeting */
+
 @HiveType(typeId: 5)
 class Ticket extends HiveObject {
   @HiveField(0)

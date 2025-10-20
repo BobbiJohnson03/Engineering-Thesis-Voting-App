@@ -2,6 +2,14 @@ import 'package:hive/hive.dart';
 import 'enums.dart';
 part 'session.g.dart';
 
+// Session to pojedyncze głosowanie tworzone przez administratora
+/** np sesja „Czy zatwierdzasz budżet na rok 2026?”
+To jest jedna Session — ma:
+swoje pytania (questionIds),
+osobne głosy (Vote),
+swoje tokeny dołączenia (Ticket),
+i własny klucz podpisujący (jwtKeyId). */
+
 @HiveType(typeId: 4)
 class Session extends HiveObject {
   @HiveField(0)
@@ -70,14 +78,14 @@ class Session extends HiveObject {
     this.shortCode = '', // ← domyślnie puste, lub zrób `required`
   });
 
-  // JOIN tokeny wygasły?
+  // czy JOIN tokeny wygasły
   bool get isExpired => expiresAt != null && DateTime.now().isAfter(expiresAt!);
 
-  // Głosowanie po czasie?
+  // Głosowanie po czasie
   bool get isVotingTimeOver =>
       votingEndsAt != null && DateTime.now().isAfter(votingEndsAt!);
 
-  // Czy można przyjąć nowy głos TERAZ?
+  // Czy można przyjąć nowy głos TERAZ
   bool get canAcceptVotes => isOpen && !isVotingTimeOver;
 
   // zakończ sesję (bez archiwizacji)
