@@ -1,19 +1,26 @@
+// lib/repositories/session_repository.dart
 import 'package:hive/hive.dart';
 import '../models/session.dart';
-import '../utils/hive_boxes.dart';
+import '_boxes.dart';
 
 class SessionRepository {
-  Future<Box<Session>> _box() => HiveBoxes.sessions();
+  Box<Session>? _box;
 
-  Future<Session?> getById(String id) async => (await _box()).values.firstWhere(
-    (s) => s.sessionId == id,
-    orElse: () => null,
-  );
+  Future<Box<Session>> _open() async =>
+      _box ??= await Hive.openBox<Session>(boxSession);
 
-  Future<void> upsert(Session s) async => (await _box()).put(s.sessionId, s);
+  Future<void> put(Session s) async {
+    final box = await _open();
+    await box.put(s.sessionId, s);
+  }
 
-  Future<List<Session>> listByIds(List<String> ids) async {
-    final box = await _box();
+  Future<Session?> get(String id) async {
+    final box = await _open();
+    return box.get(id);
+  }
+
+  Future<List<Session>> byIds(List<String> ids) async {
+    final box = await _open();
     return ids.map((id) => box.get(id)).whereType<Session>().toList();
   }
 }

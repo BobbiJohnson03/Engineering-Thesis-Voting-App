@@ -1,15 +1,52 @@
+// lib/repositories/ticket_repository.dart
 import 'package:hive/hive.dart';
 import '../models/ticket.dart';
-import '../utils/hive_boxes.dart';
+import '_boxes.dart';
 
 class TicketRepository {
-  Future<Box<Ticket>> _box() => HiveBoxes.tickets();
+  Box<Ticket>? _box;
 
-  Future<Ticket?> findByPassAndSession(String passId, String sessionId) async =>
-      (await _box()).values.firstWhere(
-        (t) => t.byPassId == passId && t.sessionId == sessionId && !t.revoked,
-        orElse: () => null,
-      );
+  Future<Box<Ticket>> _open() async =>
+      _box ??= await Hive.openBox<Ticket>(boxTicket);
 
-  Future<void> save(Ticket t) async => (await _box()).put(t.ticketId, t);
+  Future<Ticket?> get(String id) async {
+    final box = await _open();
+    return box.get(id);
+  }
+
+  /// Idempotent: returns existing ticket for (passId, sessionId) if present.
+  Future<Ticket> issueIfAbsent({
+    required String ticketId,
+    required String sessionId,
+    required String byPassId,
+    DateTime? issuedAt,
+    String? deviceFingerprintHash,
+  }) async {
+    final box = await _open();
+
+    final existing = box.values.firstWhere(
+      (t) => t.byPassId == byPassId && t.sessionId == sessionId,
+      orElse: () => null as Ticket,
+    );
+    if (existing != null) return existing;
+
+    final t = Ticket(
+      ticketId: ticketId,
+      sessionId: sessionId,
+      issuedAt: issuedAt ?? DateTime.now(),
+      byPassId: byPassId,
+      deviceFingerprintHash: deviceFingerprintHash,
+    );
+    await box.put(t.ticketId, t);
+    return t;
+  }
+
+  Future<void> markUsed(String ticketId) async {
+    final box = await _open();
+    final t = box.get(ticketId);
+    if (t != null && !t.used) {
+      t.used = true;
+      await t.save();
+    }
+  }
 }

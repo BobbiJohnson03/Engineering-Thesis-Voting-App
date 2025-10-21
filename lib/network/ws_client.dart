@@ -1,29 +1,20 @@
-// lib/network/ws_client.dart
 import 'dart:async';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
-WebSocketChannel connectWs(String baseWsUrl, String meetingId) {
-  // baseWsUrl example: ws://192.168.1.10:8080
-  final url = Uri.parse('$baseWsUrl/ws?mid=$meetingId');
-  return WebSocketChannel.connect(url);
-}
-
-/// Optional: a tiny wrapper with lifecycle & callbacks
+/// Lightweight WebSocket client used by voter & admin UIs.
 class WsService {
-  final String baseWsUrl;
-  final String meetingId;
-
+  final Uri wsUri;
   WebSocketChannel? _channel;
   StreamSubscription? _sub;
 
-  WsService({required this.baseWsUrl, required this.meetingId});
+  WsService(this.wsUri);
 
   void connect({
     void Function(dynamic msg)? onMessage,
     void Function()? onDone,
     void Function(Object err)? onError,
   }) {
-    _channel = connectWs(baseWsUrl, meetingId);
+    _channel = WebSocketChannel.connect(wsUri);
     _sub = _channel!.stream.listen(
       (msg) => onMessage?.call(msg),
       onDone: onDone,

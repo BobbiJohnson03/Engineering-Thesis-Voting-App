@@ -1,12 +1,22 @@
+// lib/repositories/vote_repository.dart
 import 'package:hive/hive.dart';
 import '../models/vote.dart';
-import '../utils/hive_boxes.dart';
+import '_boxes.dart';
 
 class VoteRepository {
-  Future<Box<Vote>> _box() => HiveBoxes.votes();
+  Box<Vote>? _box;
 
-  Future<void> save(Vote v) async => (await _box()).put(v.voteId, v);
+  Future<Box<Vote>> _open() async => _box ??= await Hive.openBox<Vote>(boxVote);
 
-  Future<List<Vote>> forSession(String sessionId) async =>
-      (await _box()).values.where((v) => v.sessionId == sessionId).toList();
+  Future<void> put(Vote v) async {
+    final box = await _open();
+    await box.put(v.voteId, v);
+  }
+
+  Future<List<Vote>> forSession(String sessionId) async {
+    final box = await _open();
+    return box.values
+        .where((v) => v.sessionId == sessionId)
+        .toList(growable: false);
+  }
 }
