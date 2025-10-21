@@ -5,12 +5,16 @@ part 'result.g.dart';
 class Result extends HiveObject {
   @HiveField(0)
   String sessionId;
+
   @HiveField(1)
   String questionId;
+
   @HiveField(2)
   Map<String, int> countsByOptionId;
+
   @HiveField(3)
   DateTime computedAt;
+
   @HiveField(4)
   String? ledgerHeadHash;
 

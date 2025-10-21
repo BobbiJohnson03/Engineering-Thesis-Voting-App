@@ -3,7 +3,7 @@ part 'meeting_pass.g.dart';
 
 /*permission to join the whole meeting */
 
-@HiveType(typeId: 15)
+@HiveType(typeId: 11)
 class MeetingPass extends HiveObject {
   @HiveField(0)
   String passId; // UUID

@@ -85,30 +85,64 @@ class Session extends HiveObject {
   bool get isVotingTimeOver =>
       votingEndsAt != null && DateTime.now().isAfter(votingEndsAt!);
 
-  // Czy można przyjąć nowy głos TERAZ
-  bool get canAcceptVotes => isOpen && !isVotingTimeOver;
-
-  // zakończ sesję (bez archiwizacji)
+  // Zakończ sesję (bez archiwizacji)
   void close() {
+    if (!isOpen) return;
     isOpen = false;
     save();
   }
 
-  // archiwizacja po zamknięciu
-  void archive() {
-    archived = true;
-    save();
-  }
-
-  // unieważnij stare join-QR (rotacja klucza)
+  // Unieważnij stare join-QR (rotacja klucza)
   void rotateJoinKey(String newKeyId) {
     jwtKeyId = newKeyId;
     save();
   }
 
-  // aktualizacja głowy łańcucha po zapisie głosu
+  // Aktualizacja głowy łańcucha po zapisie głosu
   void updateLedgerHead(String newHead) {
     ledgerHeadHash = newHead;
     save();
+  }
+
+  // --- improved guards ---
+
+  // 1) Nie przyjmuj głosów, jeśli zarchiwizowana
+  bool get canAcceptVotes => isOpen && !archived && !isVotingTimeOver;
+
+  // 2) Czy można dołączyć TERAZ (nowy uczestnik)
+  bool get canJoinNow => isOpen && !archived && !isExpired;
+
+  // 3) Archiwizacja wymusza zamknięcie
+  void archive() {
+    if (isOpen) isOpen = false;
+    archived = true;
+    save();
+  }
+
+  // 4) (opcjonalnie) ustaw deadline głosowania i auto-zamknij, jeśli minął
+  void setVotingDeadline(DateTime? deadline) {
+    votingEndsAt = deadline;
+    if (votingEndsAt != null &&
+        DateTime.now().isAfter(votingEndsAt!) &&
+        isOpen) {
+      isOpen = false;
+    }
+    save();
+  }
+
+  // 5) (opcjonalnie) rozstrzyganie limitu zaznaczeń
+  int? effectiveMaxSelectableFor(String questionId, {int? questionDefault}) {
+    if (maxSelectionsPerQuestion.containsKey(questionId)) {
+      return maxSelectionsPerQuestion[questionId];
+    }
+    return questionDefault;
+  }
+
+  bool get isValid =>
+      sessionId.isNotEmpty && title.isNotEmpty && questionIds.isNotEmpty;
+
+  void closeAndArchive() {
+    close();
+    archive();
   }
 }

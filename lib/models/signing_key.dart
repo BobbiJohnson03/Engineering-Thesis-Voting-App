@@ -5,12 +5,16 @@ part 'signing_key.g.dart';
 class SigningKey extends HiveObject {
   @HiveField(0)
   String keyId;
+
   @HiveField(1)
   String sessionId;
+
   @HiveField(2)
   String kty; // 'HMAC'
+
   @HiveField(3)
   String secret; // lokalny sekret
+
   @HiveField(4)
   DateTime createdAt;
 

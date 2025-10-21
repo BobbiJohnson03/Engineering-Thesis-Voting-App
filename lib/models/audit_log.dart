@@ -5,12 +5,16 @@ part 'audit_log.g.dart';
 class AuditLog extends HiveObject {
   @HiveField(0)
   String action; // 'session_created' | 'ticket_issued' | ...
+
   @HiveField(1)
   String sessionId;
+
   @HiveField(2)
   String? subjectId; // np. ticketId / voteId / questionId
+
   @HiveField(3)
   DateTime timestamp;
+
   @HiveField(4)
   String? details; // JSON/text
 

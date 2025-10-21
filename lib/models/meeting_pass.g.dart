@@ -8,7 +8,7 @@ part of 'meeting_pass.dart';
 
 class MeetingPassAdapter extends TypeAdapter<MeetingPass> {
   @override
-  final int typeId = 15;
+  final int typeId = 11;
 
   @override
   MeetingPass read(BinaryReader reader) {

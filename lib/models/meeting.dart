@@ -1,7 +1,7 @@
 import 'package:hive/hive.dart';
 part 'meeting.g.dart';
 
-@HiveType(typeId: 14)
+@HiveType(typeId: 10)
 class Meeting extends HiveObject {
   @HiveField(0)
   String meetingId; // UUID
