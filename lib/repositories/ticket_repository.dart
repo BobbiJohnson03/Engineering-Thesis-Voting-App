@@ -1,4 +1,3 @@
-// lib/repositories/ticket_repository.dart
 import 'package:hive/hive.dart';
 import '../models/ticket.dart';
 import '_boxes.dart';
@@ -24,10 +23,14 @@ class TicketRepository {
   }) async {
     final box = await _open();
 
-    final existing = box.values.firstWhere(
-      (t) => t.byPassId == byPassId && t.sessionId == sessionId,
-      orElse: () => null as Ticket,
-    );
+    Ticket? existing;
+    for (final t in box.values) {
+      if (t.byPassId == byPassId && t.sessionId == sessionId) {
+        existing = t;
+        break;
+      }
+    }
+
     if (existing != null) return existing;
 
     final t = Ticket(

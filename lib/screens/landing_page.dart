@@ -123,7 +123,7 @@ class LandingPage extends StatelessWidget {
                     child: ElevatedButton(
                       onPressed: () {
                         // go to QR scanner page
-                        Navigator.pushNamed(context, Routes.qrScanner);
+                        Navigator.pushNamed(context, Routes.adminHost);
                       },
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(

@@ -34,22 +34,41 @@ class ApiNetwork {
   /// POST /joinMeeting
   /// body: { token?: string, mid: string, deviceFingerprintHash?: string }
   /// returns: { meeting, passId, agenda: [...] }
-  Future<Map<String, dynamic>> joinMeeting(Map<String, dynamic> body) async {
+  Future<Map<String, dynamic>> joinMeeting(Map<String, dynamic> body) {
     return _postJson('/joinMeeting', body);
   }
 
   /// POST /ticket (idempotent creation)
   /// body: { passId: string, sessionId: string, deviceFingerprintHash?: string }
   /// returns: { ticketId, sessionId, byPassId }
-  Future<Map<String, dynamic>> issueTicket(Map<String, dynamic> body) async {
+  Future<Map<String, dynamic>> issueTicket(Map<String, dynamic> body) {
     return _postJson('/ticket', body);
   }
 
-  /// POST /vote
+  /// POST /vote (debug/manual)
   /// body: { ticketId, sessionId, questionId, selectedOptionIds: [] }
-  /// returns: { ok: true }
-  Future<Map<String, dynamic>> sendVote(Map<String, dynamic> body) async {
+  Future<Map<String, dynamic>> sendVote(Map<String, dynamic> body) {
     return _postJson('/vote', body);
+  }
+
+  /// GET /manifest?sid=...
+  Future<Map<String, dynamic>> getManifest(String sessionId) async {
+    final uri = Uri.parse('$baseUrl/manifest?sid=$sessionId');
+    final res = await _client.get(uri).timeout(timeout);
+    return _decodeJsonOrThrow(res, expectOk: true);
+  }
+
+  /// POST /voteBundle
+  Future<Map<String, dynamic>> sendVoteBundle({
+    required String ticketId,
+    required String sessionId,
+    required List<Map<String, dynamic>> answers,
+  }) {
+    return _postJson('/voteBundle', {
+      'ticketId': ticketId,
+      'sessionId': sessionId,
+      'answers': answers,
+    });
   }
 
   /// Helper to construct the websocket URL for a meeting.
@@ -65,6 +84,44 @@ class ApiNetwork {
       path: '/ws',
       queryParameters: {'mid': meetingId},
     );
+  }
+
+  // ------------------- Admin endpoints -------------------
+
+  /// GET /admin/results?sid=...
+  Future<Map<String, dynamic>> getResults(String sessionId) async {
+    final uri = Uri.parse('$baseUrl/admin/results?sid=$sessionId');
+    final res = await _client.get(uri).timeout(timeout);
+    return _decodeJsonOrThrow(res, expectOk: true);
+  }
+
+  /// POST /admin/close
+  Future<Map<String, dynamic>> adminClose(String sessionId) {
+    return _postJson('/admin/close', {'sessionId': sessionId});
+  }
+
+  /// POST /admin/archive
+  Future<Map<String, dynamic>> adminArchive(String sessionId) {
+    return _postJson('/admin/archive', {'sessionId': sessionId});
+  }
+
+  /// POST /admin/session/seed
+  Future<Map<String, dynamic>> adminSeedSession(Map<String, dynamic> payload) {
+    return _postJson('/admin/session/seed', payload);
+  }
+
+  /// GET /admin/export/pdf?sid=...   (raw bytes)
+  Future<http.Response> adminExportPdfRaw(String sessionId) async {
+    final uri = Uri.parse('$baseUrl/admin/export/pdf?sid=$sessionId');
+    final res = await _client.get(uri).timeout(timeout);
+    if (res.statusCode >= 400) {
+      throw ApiException(
+        statusCode: res.statusCode,
+        message: 'Export failed',
+        rawBody: res.body,
+      );
+    }
+    return res;
   }
 
   // ------------------- Internal helpers -------------------

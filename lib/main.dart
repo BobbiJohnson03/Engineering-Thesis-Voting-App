@@ -55,9 +55,9 @@ Future<void> _initHive() async {
     Hive.registerAdapter(AuditLogAdapter()); // audit_log.dart
   if (!Hive.isAdapterRegistered(9))
     Hive.registerAdapter(SigningKeyAdapter()); // signing_key.dart
-  if (!Hive.isAdapterRegistered(14))
+  if (!Hive.isAdapterRegistered(10))
     Hive.registerAdapter(MeetingAdapter()); // meeting.dart
-  if (!Hive.isAdapterRegistered(15))
+  if (!Hive.isAdapterRegistered(11))
     Hive.registerAdapter(MeetingPassAdapter()); // meeting_pass.dart
 
   // Boxy będą otwierane leniwie (np. w repozytoriach lub serwisach storage).
