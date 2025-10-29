@@ -2,14 +2,6 @@ import 'package:hive/hive.dart';
 import 'enums.dart';
 part 'session.g.dart';
 
-// Session to pojedyncze głosowanie tworzone przez administratora
-/** np sesja „Czy zatwierdzasz budżet na rok 2026?”
-To jest jedna Session — ma:
-swoje pytania (questionIds),
-osobne głosy (Vote),
-swoje tokeny dołączenia (Ticket),
-i własny klucz podpisujący (jwtKeyId). */
-
 @HiveType(typeId: 4)
 class Session extends HiveObject {
   @HiveField(0)

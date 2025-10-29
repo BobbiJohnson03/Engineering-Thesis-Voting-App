@@ -5,9 +5,9 @@ part 'enums.g.dart';
 określają jakie typy sesji i jakie schematy odpowiedzi są w ogóle możliwe w aplikacji */
 
 // typ sesji głosowania: publiczna (wyniki jawne) lub tajna (wyniki ukryte)
-@HiveType(typeId: 0)
+@HiveType(typeId: 0) // unikalny identyfikator typu dla Hive dla całej aplikacji
 enum SessionType {
-  @HiveField(0)
+  @HiveField(0) // trwały identyfikator pola w Hive
   public,
   @HiveField(1)
   secret,

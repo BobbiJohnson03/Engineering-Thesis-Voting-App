@@ -1,14 +1,15 @@
 import 'package:hive/hive.dart';
 part 'question.g.dart';
 
+/* pojedyncza opcja odpowiedzi na pytanie */
 @HiveType(typeId: 2)
-class OptionModel /* pojedyncza opcja odpowiedzi na pytanie */ {
+class OptionModel {
   @HiveField(0)
   String id;
   @HiveField(1)
-  String label;
+  String label; // tekst opcji wyświetlany użytkownikowi w interfejsie (np. na przycisku odpowiedzi).
   @HiveField(2)
-  int order;
+  int order; // kolejność wyświetlania opcji
   OptionModel({required this.id, required this.label, required this.order});
 }
 
