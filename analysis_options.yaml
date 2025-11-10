@@ -1,0 +1,28 @@
+include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  exclude:
+    - "**/*.g.dart"
+    - "**/*.freezed.dart"
+    - "build/**"
+
+linter:
+  rules:
+    - always_declare_return_types
+    - always_use_package_imports
+    - avoid_empty_else
+    - avoid_print
+    - avoid_relative_lib_imports
+    - camel_case_types
+    - constant_identifier_names
+    - empty_catches
+    - file_names
+    - library_names
+    - library_prefixes
+    - non_constant_identifier_names
+    - prefer_final_fields
+    - prefer_final_locals
+    - slash_for_doc_comments
+    - type_init_formals
+    - unnecessary_brace_in_string_interps
+    - unnecessary_getters_setters
